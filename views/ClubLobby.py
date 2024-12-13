@@ -3,24 +3,16 @@ from datetime import datetime
 from flask import render_template, request, redirect, flash, session, url_for, jsonify
 from flask import Blueprint
 
-from ATMflask import db,app
+from ATMflask import db
 from ATMflask.sql import User,Club,Membership
 
-from flask_sqlalchemy import SQLAlchemy
-
 clublb = Blueprint('clublb', __name__)
-
-'''
-实现功能：
-    1. 创建社团
-    2. 编辑社团信息
-    3. 删除社团
-'''
 
 # 显示所有社团
 @clublb.route('/ClubLobby', methods=['post', 'get'])
 def clublobby():
-
+    user_id = session.get('id')
+    username = None
     #----------------- 所有用户部分 -------------------#
     search_query = request.args.get('search')  # 获取搜索关键词
     # 获取所有社团并计算每个社团的成员人数和manager
@@ -56,8 +48,6 @@ def clublobby():
         member_counts = [club.member_count for club in club_data]
 
     # ----------------- 当前登录用户部分 -------------------#
-    user_id = session.get('id')
-    username = None
     club_details = []
 
     if user_id:
@@ -100,17 +90,25 @@ def clublobby():
 
 @clublb.route('/CreateClub', methods=['GET', 'POST'])
 def createClub():
+    # 获取当前用户的ID
+    user_id = session.get('id')
+
+    if not user_id:
+        flash('You must log in first to create a club.', 'error')
+        return redirect('/ClubLobby')
+
+    user = User.query.get(user_id)
+    username = user.username
     if request.method == 'POST':
-        # 获取当前用户的ID
-        user_id = session.get('id')
-
-        if not user_id:
-            flash('You must be logged in to create a club.', 'error')
-            return redirect(url_for('lr.login'))
-
         # 获取用户提交的数据
         club_name = request.form.get('club_name')
         description = request.form.get('description')
+
+        #判断club name不能重复
+        clubName_exists = Club.query.filter_by(club_name=club_name).first()
+        if clubName_exists:
+            flash("This club name already exists.")
+            return render_template('CreateClub.html', username=username)
 
         if club_name and description:
             # 创建新的俱乐部对象
@@ -129,6 +127,6 @@ def createClub():
 
             # 提示用户社团创建成功
             flash('Club created successfully!', 'success')
-            return redirect(url_for('clubdt.clubDetail', club_id=club_id))
+            return redirect(url_for('clubct.clubContent', club_id=club_id))
 
-    return render_template('CreateClub.html')
+    return render_template('CreateClub.html',username=username)

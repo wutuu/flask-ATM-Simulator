@@ -17,7 +17,7 @@
         <a href="../ActivityLobby"><li class="navli">Activity Lobby</li></a>
         <a href="../MyActivity"><li class="navli">My Activity</li></a>
         {% if username %}
-            <a href="../MyInformation"><li class="navli" id="username">{{ username }}</li></a>
+            <a href="../MyProfile"><li class="navli" id="username">{{ username }}</li></a>
             <form action="/Logout" method="post" id="logoutForm" style="display: none;">
                 <button type="submit" style="display: none;">Logout</button></form>
             <a href="../Logout" onclick="confirmLogout(event)"><li class="navli" id="logout">Logout</li></a>
@@ -43,7 +43,7 @@
                     <th style="width:200px;">Role</th>
                     <th style="width: 150px;">Actions</th>
                     <th style="width: 50px;background-color:white;border:none;">
-                        <button id="add-participant-btn" class="add-participant-btn">Add</button>
+                        <button id="add-participant-btn" class="add-participant-btn" data-activity-id="{{activity_id}}">Add</button>
                     </th>
                 </tr>
             </thead>

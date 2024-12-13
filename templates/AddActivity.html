@@ -15,7 +15,7 @@
         <a href="ActivityLobby"><li class="navli">Activity Lobby</li></a>
         <a href="MyActivity"><li class="navli">My Activity</li></a>
         {% if username %}
-            <li class="navli" id="username">{{ username }}</li>
+            <a href="MyProfile"><li class="navli" id="username">{{ username }}</li></a>
             <form action="/Logout" method="post" id="logoutForm" style="display: none;">
                 <button type="submit" style="display: none;">Logout</button></form>
             <a href="Logout" onclick="confirmLogout(event)"><li class="navli" id="logout">Logout</li></a>
@@ -90,9 +90,8 @@
 
         <p align="center" style="color:#CC0000;font-size:20px;margin-top:30px;">{{ get_flashed_messages()[0] }}</p>
         <a href="MyActivity"><input type="submit" value="Submit" id="submit" align="center"></a>
-
     </form>
-
+    <div style="height:40px;"></div>
     </div>
 </div>
 
